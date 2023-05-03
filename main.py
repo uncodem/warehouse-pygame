@@ -11,6 +11,7 @@ frame = 0
 i_window = 0
 level = 0
 
+title_screen = pygame.image.load("assets/title.png")
 
 ### Functions
 
@@ -33,6 +34,8 @@ keys = pygame.key.get_pressed()
 pygame.key.set_repeat(250, 150)
 
 running = True
+
+running = game.displayScreen(title_screen)
 
 while running:
     frame += 1

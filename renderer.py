@@ -26,7 +26,19 @@ class SokobanRenderer(engine.SokobanCore):
 
         pygame.display.set_caption("Push Block")
 
-    
+    def displayScreen(self, img):
+        # Take control of the window and display screen
+        keyPressed = False
+        imgrect = img.get_rect()
+        while not keyPressed:
+            self.screen.fill((0,0,0))
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT: pygame.display.quit(); return False
+                elif event.type == pygame.KEYDOWN: keyPressed = True
+            self.screen.blit(img, imgrect)
+            pygame.display.flip()
+        return True
+
     def drawMap(self):
         rect = pygame.Rect(0,0,self.s_width, self.s_height)
         for y in range(engine.MAP_HEIGHT):
