@@ -7,6 +7,10 @@ class SokobanRenderer(engine.SokobanCore):
 
     screen_width = 960
     screen_height = 720
+    b_tiles_loaded = False
+    o_tile_images = [
+
+    ]
 
     palette = [
         (0x1a,0x1c,0x2c), 
@@ -24,7 +28,7 @@ class SokobanRenderer(engine.SokobanCore):
         self.s_width = int(self.screen_width/engine.MAP_WIDTH)
         self.s_height = int(self.screen_height/engine.MAP_HEIGHT)
 
-        pygame.display.set_caption("Push Block")
+        pygame.display.set_caption("Warehouse")
 
     def displayScreen(self, img):
         # Take control of the window and display screen
@@ -39,6 +43,12 @@ class SokobanRenderer(engine.SokobanCore):
             pygame.display.flip()
         return True
 
+    def loadTiles(self, path):
+        self.b_tiles_loaded = True
+        for i in range(len(self.palette)-1):
+            self.o_tile_images.append(pygame.image.load(f"{path}/{i}.png"))
+        pygame.display.set_icon(self.o_tile_images[engine.PLAYER])
+
     def drawMap(self):
         rect = pygame.Rect(0,0,self.s_width, self.s_height)
         for y in range(engine.MAP_HEIGHT):
@@ -46,8 +56,13 @@ class SokobanRenderer(engine.SokobanCore):
                 i = self.map[self.i_getIndex(x,y)]
                 rect.x = x*self.s_width
                 rect.y = y*self.s_height
-                pygame.draw.rect(self.screen, self.palette[i], rect)
+                if i == engine.BARRIER: continue
+                if self.b_tiles_loaded:
+                    self.screen.blit(self.o_tile_images[i], rect)
+                else:
+                    pygame.draw.rect(self.screen, self.palette[i], rect)
         rect.x = self.player_x * self.s_width
         rect.y = self.player_y * self.s_height
-        pygame.draw.rect(self.screen, self.palette[1], rect)
+        if self.b_tiles_loaded: self.screen.blit(self.o_tile_images[engine.PLAYER], rect)
+        else: pygame.draw.rect(self.screen, self.palette[1], rect)
 

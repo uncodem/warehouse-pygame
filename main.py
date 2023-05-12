@@ -29,6 +29,7 @@ pygame.init()
 
 game = renderer.SokobanRenderer()
 game.m_loadLvl(levels.map[level])
+game.loadTiles("assets/")
 keys = pygame.key.get_pressed()
 
 pygame.key.set_repeat(250, 150)
