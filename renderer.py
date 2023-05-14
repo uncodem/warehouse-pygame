@@ -5,14 +5,14 @@ import engine
 
 class SokobanRenderer(engine.SokobanCore):
 
-    screen_width = 960
-    screen_height = 720
+    d_screen_width = 960
+    d_screen_height = 720
     b_tiles_loaded = False
     o_tile_images = [
 
     ]
 
-    palette = [
+    d_palette = [
         (0x1a,0x1c,0x2c), 
         (0xf4,0xf4,0xf4), 
         (0xff,0xcd,0x75), 
@@ -24,13 +24,13 @@ class SokobanRenderer(engine.SokobanCore):
 
     def __init__(self):
         super().__init__()
-        self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
-        self.s_width = int(self.screen_width/engine.MAP_WIDTH)
-        self.s_height = int(self.screen_height/engine.MAP_HEIGHT)
+        self.screen = pygame.display.set_mode((self.d_screen_width, self.d_screen_height))
+        self.s_width = int(self.d_screen_width/engine.MAP_WIDTH)
+        self.s_height = int(self.d_screen_height/engine.MAP_HEIGHT)
 
         pygame.display.set_caption("Warehouse")
 
-    def displayScreen(self, img):
+    def m_displayScreen(self, img, m_render_step = None):
         # Take control of the window and display screen
         keyPressed = False
         imgrect = img.get_rect()
@@ -40,16 +40,25 @@ class SokobanRenderer(engine.SokobanCore):
                 if event.type == pygame.QUIT: pygame.display.quit(); return False
                 elif event.type == pygame.KEYDOWN: keyPressed = True
             self.screen.blit(img, imgrect)
+            if m_render_step:
+                m_render_step(self)
             pygame.display.flip()
         return True
 
-    def loadTiles(self, path):
+    def m_loadTiles(self, path):
+        # Load tile images, if loading failed, use built-in palette for blocks
         self.b_tiles_loaded = True
-        for i in range(len(self.palette)-1):
-            self.o_tile_images.append(pygame.image.load(f"{path}/{i}.png"))
+        try:
+            for i in range(len(self.d_palette)-1):
+                self.o_tile_images.append(pygame.image.load(f"{path}/{i}.png"))
+        except FileNotFoundError:
+            self.b_tiles_loaded = False
+            self.o_tile_images = []
+            return
+        # Use the player sprite as an icon if the tiles loaded successfully
         pygame.display.set_icon(self.o_tile_images[engine.PLAYER])
 
-    def drawMap(self):
+    def m_drawMap(self):
         rect = pygame.Rect(0,0,self.s_width, self.s_height)
         for y in range(engine.MAP_HEIGHT):
             for x in range(engine.MAP_WIDTH):
@@ -60,9 +69,9 @@ class SokobanRenderer(engine.SokobanCore):
                 if self.b_tiles_loaded:
                     self.screen.blit(self.o_tile_images[i], rect)
                 else:
-                    pygame.draw.rect(self.screen, self.palette[i], rect)
+                    pygame.draw.rect(self.screen, self.d_palette[i], rect)
         rect.x = self.player_x * self.s_width
         rect.y = self.player_y * self.s_height
         if self.b_tiles_loaded: self.screen.blit(self.o_tile_images[engine.PLAYER], rect)
-        else: pygame.draw.rect(self.screen, self.palette[1], rect)
+        else: pygame.draw.rect(self.screen, self.d_palette[engine.PLAYER], rect)
 
