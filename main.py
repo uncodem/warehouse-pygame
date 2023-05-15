@@ -11,6 +11,7 @@ frame = 0
 i_window = 0
 level = 0
 moves = 0
+easter_egg = 0
 
 # Font is to be loaded later
 game_font = None
@@ -80,6 +81,12 @@ while running:
                 moved = game.b_move_player(0,-1)
             elif (keys[pygame.K_DOWN] or keys[pygame.K_s]) and not moved:
                 moved = game.b_move_player(0,1)
+            elif keys[pygame.K_SPACE] and not moved:
+                easter_egg += 1
+            elif keys[pygame.K_PERIOD] and not moved:
+                level = 0
+                game.m_loadLvl(levels.eggs[0 if easter_egg % 2 == 0 else 1])
+                easter_egg = 0
             
             if keys[pygame.K_r] and not moved:
                 moves = 0
@@ -88,11 +95,12 @@ while running:
             # Uncomment for debug
             # if keys[pygame.K_e] and not moved:
             #     level += 1
-            #    level %= len(levels.map)
-            #    game.m_loadLvl(levels.map[level])
+            #     level %= len(levels.map)
+            #     game.m_loadLvl(levels.map[level])
                         
             
             if moved: 
+                easter_egg = 0
                 moves += 1
                 checkWin()
     
