@@ -72,18 +72,25 @@ while running:
         elif event.type == pygame.KEYDOWN:
             keys = pygame.key.get_pressed()
             moved = False
-            if keys[pygame.K_LEFT]:
+            if keys[pygame.K_LEFT] or keys[pygame.K_a]:
                 moved = game.b_move_player(-1,0)
-            elif keys[pygame.K_RIGHT] and not moved:
+            elif (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and not moved:
                 moved = game.b_move_player(1,0)
-            elif keys[pygame.K_UP] and not moved:
+            elif (keys[pygame.K_UP] or keys[pygame.K_w]) and not moved:
                 moved = game.b_move_player(0,-1)
-            elif keys[pygame.K_DOWN] and not moved:
+            elif (keys[pygame.K_DOWN] or keys[pygame.K_s]) and not moved:
                 moved = game.b_move_player(0,1)
             
             if keys[pygame.K_r] and not moved:
                 moves = 0
                 game.m_loadLvl(levels.map[level])
+
+            # Uncomment for debug
+            # if keys[pygame.K_e] and not moved:
+            #     level += 1
+            #    level %= len(levels.map)
+            #    game.m_loadLvl(levels.map[level])
+                        
             
             if moved: 
                 moves += 1
